@@ -9,3 +9,7 @@ update:
 
 clean:
 	rm -f $(TARGET)
+
+install:
+	cp $(TARGET) /usr/local/bin/
+	chmod 755 /usr/local/bin/$(TARGET)

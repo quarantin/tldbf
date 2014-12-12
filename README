@@ -1,6 +1,9 @@
 
-Build:
-	make clean && make
+Install:
+	make clean
+	make
+	sudo make install
+
 
 Updating TLD file:
 	make update
