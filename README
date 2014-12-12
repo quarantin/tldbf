@@ -4,9 +4,8 @@ Install:
 	make update
 	sudo make install
 
-
-Updating TLD file:
-	make update
+Uninstall:
+	sudo make uninstall
 
 Example:
 	$ tldbf example.com
