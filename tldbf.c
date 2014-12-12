@@ -10,12 +10,20 @@
 #include <fcntl.h>
 
 #define SIZE BUFSIZ
+#define NAME "tldbf"
 #define DELIM " \t\r\n"
+#define TLDFILE "tlds-alpha-by-domain.txt"
 
 /* https://www.icann.org/news/announcement-2-2014-08-01-en */
 #define ICAN_SPECIAL_IP 892665983 /* 127.0.53.53 */
 
 int verbose = 0;
+
+char *pathlist[] = {
+	".",
+	"/usr/share/"NAME,
+	NULL
+};
 
 void strtolower(char *buf, size_t size)
 {
@@ -142,13 +150,52 @@ int check_valid_name (char *name)
 	return 1;
 }
 
+char *check_file_exists (char *path)
+{
+	int err;
+	struct stat info;
+
+	memset(&info, 0, sizeof(info));
+	err = stat(path, &info);
+	return (err ? NULL : path);
+}
+
+char *check_tldfile_path (char *dir, char *name)
+{
+	int len;
+	static char path[BUFSIZ];
+
+	len = snprintf(path, sizeof(path), "%s/%s", dir, name);
+	if (len < 0 || (unsigned)len >= sizeof(path)) {
+		perror("snprintf failed");
+		return NULL;
+	}
+
+	return check_file_exists(path);
+}
+
+char *find_tldfile_path ()
+{
+	unsigned int i;
+	char *path;
+
+	for (i = 0; pathlist[i]; i++) {
+
+		path = check_tldfile_path(pathlist[i], TLDFILE);
+		if (path)
+			return path;
+	}
+
+	return NULL;
+}
+
 int main (int argc, char **argv)
 {
-	char *name, *ptr;
+	char *name, *ptr, *tldfile;
 
 	if (argc < 2) {
 		printf("Usage: %s <name>\n", argv[0]);
-		return 0;
+		return EXIT_FAILURE;
 	}
 
 	name = argv[1];
@@ -163,11 +210,17 @@ int main (int argc, char **argv)
 
 	if (!check_valid_name(name)) {
 		printf("Invalid name `%s'\n", name);
-		return 0;
+		return EXIT_FAILURE;
 	}
 
-	bf_tlds("./tlds-alpha-by-domain.txt", name);
+	tldfile = find_tldfile_path();
+	if (!tldfile) {
+		printf("Could not find TLD file: %s\n", TLDFILE);
+		return EXIT_FAILURE;
+	}
 
-	return 0;
+	bf_tlds(tldfile, name);
+
+	return EXIT_SUCCESS;
 }
 

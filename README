@@ -1,7 +1,7 @@
 
 Install:
-	make clean
 	make
+	make update
 	sudo make install
 
 
