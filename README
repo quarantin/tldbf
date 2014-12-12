@@ -1,0 +1,24 @@
+
+Build:
+	make clean && make
+
+Updating TLD file:
+	make update
+
+Example:
+	$ tldbf example.com
+	example.ac (54.250.94.155)
+	example.am (50.87.153.245)
+	example.be (80.169.63.221)
+	example.by (5.178.85.241)
+	example.bz (64.99.80.30)
+	example.cc (192.185.108.167)
+	example.cf (195.20.50.226)
+	example.ch (217.26.52.52)
+	example.cm (62.116.181.25, 91.237.88.245)
+	example.cn (65.19.141.205)
+	example.com (93.184.216.34)
+	example.cz (93.185.104.29)
+	example.de (82.165.91.73)
+	...
+
